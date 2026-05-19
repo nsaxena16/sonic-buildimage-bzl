@@ -9,6 +9,7 @@ Usage:
 """
 
 import json
+import os
 import re
 import shutil
 import sys
@@ -73,10 +74,10 @@ def generate_module_entry(name: str, version: str, src_path: str) -> None:
         json.dumps({"type": "local_path", "path": src_path}, indent=2) + "\n"
     )
 
-    # MODULE.bazel — symlink to source
+    # MODULE.bazel — symlink to source (relative so the tree is portable)
     src_module = REPO_ROOT / src_path / "MODULE.bazel"
     dst_module = version_dir / "MODULE.bazel"
-    dst_module.symlink_to(src_module.resolve())
+    dst_module.symlink_to(os.path.relpath(src_module, version_dir))
 
 
 def main() -> None:
